@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makoro Bricks & Tanks | Polokwane, Limpopo</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --brick:#B5451B;
+  --brick-dark:#8B3212;
+  --brick-light:#D4622E;
+  --concrete:#2A2A2A;
+  --concrete-mid:#444;
+  --sand:#F5EDD8;
+  --sand-dark:#E8D9B8;
+  --white:#FFFFFF;
+  --text:#1A1A1A;
+  --text-muted:#666;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;color:var(--text);background:var(--white)}
+
+/* BRICK TEXTURE — CSS only, no images needed */
+.brick-texture{
+  background-color:#8B3212;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 18px,
+      rgba(0,0,0,0.25) 18px,
+      rgba(0,0,0,0.25) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 38px,
+      rgba(0,0,0,0.15) 38px,
+      rgba(0,0,0,0.15) 40px
+    );
+}
+.brick-texture-offset{
+  background-color:#9B3A18;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 18px,
+      rgba(0,0,0,0.2) 18px,
+      rgba(0,0,0,0.2) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(0,0,0,0.12) 18px,
+      rgba(0,0,0,0.12) 20px,
+      transparent 20px,
+      transparent 58px,
+      rgba(0,0,0,0.12) 58px,
+      rgba(0,0,0,0.12) 60px
+    );
+}
+.concrete-texture{
+  background-color:#3a3a3a;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 1px,
+      transparent 8px
+    );
+}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;transition:background 0.3s}
+nav.scrolled{background:rgba(20,20,20,0.97);box-shadow:0 2px 20px rgba(0,0,0,0.3)}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo img{height:44px;width:auto;object-fit:contain}
+.logo-fallback{width:44px;height:44px;background:var(--brick);border-radius:4px;display:grid;place-items:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;color:white;flex-shrink:0}
+.logo-text{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:0.5px;line-height:1.2}
+.logo-text small{display:block;font-size:11px;font-weight:400;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:14px;font-weight:500;transition:color 0.2s}
+.nav-links a:hover{color:var(--brick-light)}
+.nav-divider{width:1px;height:20px;background:rgba(255,255,255,0.15)}
+.nav-links a.division-link{color:rgba(255,255,255,0.5);font-size:13px}
+.nav-links a.division-link:hover{color:var(--brick-light)}
+.nav-cta{background:var(--brick);color:white !important;padding:9px 22px;border-radius:4px;font-weight:600 !important;transition:background 0.2s !important}
+.nav-cta:hover{background:var(--brick-light) !important}
+
+/* HERO */
+.hero{min-height:100vh;position:relative;display:flex;align-items:center;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover}
+/* placeholder shown when hero.jpg not yet added */
+.hero-bg-placeholder{width:100%;height:100%;background:#1a0e08}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(10,5,2,0.92) 0%,rgba(20,10,5,0.75) 55%,rgba(139,50,18,0.4) 100%);z-index:1}
+.hero-brick-strip{position:absolute;bottom:0;left:0;right:0;height:8px;z-index:2}
+.hero-content{position:relative;z-index:3;max-width:1200px;margin:0 auto;padding:120px 2rem 80px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(181,69,27,0.2);border:1px solid rgba(181,69,27,0.5);color:#e8845a;padding:6px 16px;border-radius:3px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+.hero-eyebrow::before{content:'';width:6px;height:6px;background:#e8845a;border-radius:50%}
+h1.hero-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(3rem,6.5vw,5.5rem);color:white;line-height:1.0;margin-bottom:1.5rem;text-shadow:0 2px 20px rgba(0,0,0,0.5)}
+h1.hero-title span{color:var(--brick-light)}
+.hero-sub{font-size:1.1rem;color:rgba(255,255,255,0.7);max-width:540px;line-height:1.8;margin-bottom:2.5rem}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
+.btn-primary{background:var(--brick);color:white;padding:14px 30px;border-radius:4px;text-decoration:none;font-weight:600;font-size:15px;transition:background 0.2s;display:inline-block}
+.btn-primary:hover{background:var(--brick-light)}
+.btn-outline{color:white;padding:13px 30px;border-radius:4px;text-decoration:none;font-weight:600;font-size:15px;border:1.5px solid rgba(255,255,255,0.35);transition:all 0.2s;display:inline-block}
+.btn-outline:hover{border-color:white;background:rgba(255,255,255,0.08)}
+.hero-divisions{display:flex;gap:1.5rem;flex-wrap:wrap}
+.division-pill{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:6px;text-decoration:none;transition:all 0.2s}
+.division-pill:hover{background:rgba(181,69,27,0.2);border-color:rgba(181,69,27,0.4)}
+.division-pill-icon{font-size:1.4rem}
+.division-pill-text{color:white}
+.division-pill-text strong{display:block;font-size:14px;font-weight:600}
+.division-pill-text span{font-size:12px;color:rgba(255,255,255,0.5)}
+
+/* TRUST BAR */
+.trust-bar{background:var(--brick-dark);padding:1rem 2rem}
+.trust-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-around;flex-wrap:wrap;gap:1rem}
+.trust-item{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.85);font-size:13px;font-weight:500}
+.trust-item span{font-size:1.1rem}
+
+/* SECTION COMMONS */
+section{padding:5rem 2rem}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-header{margin-bottom:3rem}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--brick);margin-bottom:0.6rem}
+h2.section-title{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(1.8rem,4vw,2.6rem);color:var(--concrete);line-height:1.1}
+h2.section-title.light{color:white}
+.section-lead{font-size:1rem;color:var(--text-muted);max-width:520px;line-height:1.8;margin-top:0.75rem}
+.section-lead.light{color:rgba(255,255,255,0.6)}
+
+/* DIVIDER */
+.brick-divider{height:12px;position:relative;overflow:hidden}
+
+/* ═══════════════════════════════
+   BRICKS DIVISION
+═══════════════════════════════ */
+#bricks{background:var(--sand)}
+.bricks-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.bricks-image-block{position:relative}
+.bricks-main-img{width:100%;height:400px;object-fit:cover;border-radius:8px;display:block}
+/* placeholder when bricks-hero.jpg not added */
+.bricks-img-placeholder{width:100%;height:400px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1rem;color:rgba(255,255,255,0.4);font-size:13px}
+.img-note{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:rgba(255,255,255,0.7);font-size:11px;padding:4px 10px;border-radius:3px;font-family:monospace}
+.bricks-badge{position:absolute;bottom:-16px;right:16px;background:var(--brick);color:white;padding:12px 20px;border-radius:6px;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,0.2)}
+.bricks-badge strong{display:block;font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700}
+.bricks-badge span{font-size:11px;opacity:0.8}
+.brick-types{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.brick-type-card{background:white;border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.08)}
+.brick-type-img{height:100px;object-fit:cover;width:100%;display:block}
+.brick-type-placeholder{height:100px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;font-size:11px;color:rgba(255,255,255,0.5);font-family:monospace}
+.brick-type-body{padding:0.75rem}
+.brick-type-name{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:600;color:var(--concrete)}
+.brick-type-desc{font-size:12px;color:var(--text-muted);margin-top:3px;line-height:1.5}
+
+/* ═══════════════════════════════
+   TANKS DIVISION
+═══════════════════════════════ */
+#tanks{background:white}
+.tanks-header-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;flex-wrap:wrap;gap:1rem}
+.tanks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
+.tank-card{background:var(--sand);border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.06);transition:transform 0.2s,box-shadow 0.2s}
+.tank-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(0,0,0,0.1)}
+.tank-img-wrap{height:200px;position:relative;overflow:hidden}
+.tank-img-wrap img{width:100%;height:100%;object-fit:contain;padding:1rem;background:#e8f2f8;display:block}
+.tank-img-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#1a4a72,#0d2d47);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:rgba(255,255,255,0.4);font-size:11px;font-family:monospace}
+.tank-capacity-badge{position:absolute;top:10px;right:10px;background:var(--brick);color:white;font-family:'Oswald',sans-serif;font-weight:700;font-size:1rem;padding:4px 10px;border-radius:4px}
+.tank-body{padding:1.25rem}
+.tank-name{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600;color:var(--concrete);margin-bottom:0.4rem}
+.tank-desc{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:0.75rem}
+.tank-uses{display:flex;flex-wrap:wrap;gap:4px}
+.tank-tag{background:rgba(181,69,27,0.1);color:var(--brick-dark);font-size:11px;font-weight:600;padding:3px 8px;border-radius:3px}
+
+/* ═══════════════════════════════
+   ABOUT
+═══════════════════════════════ */
+#about{padding:0}
+.about-split{display:grid;grid-template-columns:1fr 1fr;min-height:480px}
+.about-img-side{position:relative;overflow:hidden;min-height:400px}
+.about-img-side img{width:100%;height:100%;object-fit:cover;display:block}
+.about-img-placeholder{width:100%;height:100%;min-height:400px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:rgba(255,255,255,0.3);font-size:12px;font-family:monospace}
+.about-content-side{padding:4rem 3rem;display:flex;flex-direction:column;justify-content:center;background:var(--concrete)}
+.about-content-side .eyebrow{color:var(--brick-light)}
+.about-content-side h2{color:white}
+.about-content-side p{color:rgba(255,255,255,0.65);line-height:1.8;margin-top:1rem;font-size:15px}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2rem}
+.about-stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:1rem}
+.about-stat-num{font-family:'Oswald',sans-serif;font-size:2rem;font-weight:700;color:var(--brick-light)}
+.about-stat-label{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px}
+
+/* ═══════════════════════════════
+   REVIEWS
+═══════════════════════════════ */
+#reviews{background:#1a1a1a}
+.reviews-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;flex-wrap:wrap;gap:1.5rem}
+.google-rating{display:flex;align-items:center;gap:1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:1rem 1.5rem;border-radius:8px}
+.g-score{font-family:'Oswald',sans-serif;font-size:3rem;font-weight:700;color:var(--brick-light);line-height:1}
+.g-info .stars{color:#FFC107;font-size:18px;letter-spacing:2px}
+.g-info p{font-size:12px;color:rgba(255,255,255,0.4);margin-top:2px}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem}
+.review-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:1.5rem;transition:border-color 0.2s}
+.review-card:hover{border-color:rgba(181,69,27,0.4)}
+.review-stars{color:#FFC107;font-size:14px;letter-spacing:2px;margin-bottom:0.75rem}
+.review-text{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.7;font-style:italic;margin-bottom:1rem}
+.reviewer-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.4)}
+
+/* ═══════════════════════════════
+   CONTACT
+═══════════════════════════════ */
+#contact{background:var(--sand)}
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.5rem}
+.contact-card{background:white;border-radius:8px;padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;border:1px solid rgba(0,0,0,0.06)}
+.c-icon{width:46px;height:46px;background:rgba(181,69,27,0.1);border-radius:8px;display:grid;place-items:center;font-size:1.3rem;flex-shrink:0}
+.c-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px}
+.c-value{font-size:15px;font-weight:500;color:var(--concrete);line-height:1.6}
+.map-placeholder{width:100%;height:200px;border-radius:8px;background:#d4c9b0;display:flex;align-items:center;justify-content:center;font-size:13px;color:#888;border:1px solid rgba(0,0,0,0.08);margin-top:0.5rem}
+.quote-form{background:white;border-radius:8px;padding:2rem;border:1px solid rgba(0,0,0,0.06)}
+.form-title{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--concrete);margin-bottom:0.5rem}
+.form-subtitle{font-size:14px;color:var(--text-muted);margin-bottom:1.5rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--concrete-mid);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid rgba(0,0,0,0.1);border-radius:6px;font-size:14px;font-family:'Inter',sans-serif;color:var(--text);background:white;transition:border-color 0.2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--brick)}
+.form-group textarea{height:110px;resize:vertical}
+.form-submit{width:100%;background:var(--brick);color:white;border:none;padding:13px;border-radius:6px;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background 0.2s}
+.form-submit:hover{background:var(--brick-light)}
+.wa-btn{display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:white;border-radius:6px;padding:11px;text-decoration:none;font-weight:600;font-size:14px;margin-top:0.75rem;transition:opacity 0.2s}
+.wa-btn:hover{opacity:0.9}
+.whatsapp-cta{background:rgba(37,211,102,0.08);border:1.5px dashed rgba(37,211,102,0.35);border-radius:8px;padding:2rem 1.5rem;text-align:center;margin-bottom:0.25rem}
+.whatsapp-cta-icon{font-size:2.2rem;margin-bottom:0.75rem}
+.whatsapp-cta-text{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:320px;margin:0 auto}
+.form-status{margin-top:0.75rem;font-size:14px;font-weight:500;text-align:center;display:none}
+.form-status.success{display:block;color:#1a7a3c}
+.form-status.error{display:block;color:#b3261e}
+.form-status.sending{display:block;color:var(--text-muted)}
+
+/* FOOTER */
+footer{background:#0d0d0d;color:rgba(255,255,255,0.4);padding:3rem 2rem 1.5rem}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,0.07)}
+.footer-brand img{height:44px;margin-bottom:1rem}
+.footer-brand-placeholder{font-family:'Oswald',sans-serif;font-size:1.2rem;font-weight:700;color:white;margin-bottom:0.75rem}
+.footer-brand p{font-size:13px;line-height:1.7;color:rgba(255,255,255,0.35);max-width:240px}
+.footer-col h4{font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1rem}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:0.5rem}
+.footer-col ul li a{color:rgba(255,255,255,0.35);text-decoration:none;font-size:13px;transition:color 0.2s}
+.footer-col ul li a:hover{color:var(--brick-light)}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-bottom p{font-size:12px}
+.footer-credit{font-size:12px}
+.footer-credit a{color:var(--brick-light);text-decoration:none}
+
+/* FLOATING WA */
+.wa-float{position:fixed;bottom:1.5rem;right:1.5rem;background:#25D366;color:white;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,0.35);z-index:99;transition:transform 0.2s}
+.wa-float:hover{transform:scale(1.1)}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .bricks-grid,.contact-grid,.about-split,.footer-top{grid-template-columns:1fr}
+  .about-img-side{min-height:280px}
+  .nav-links{display:none}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .hero-divisions{flex-direction:column}
+  .tanks-header-row{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <!-- LOGO: save as images/logo.png -->
+      <img src="images/logo.png" alt="Makoro Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="logo-fallback" style="display:none">MB</div>
+      <div class="logo-text">
+        Makoro
+        <small>Bricks & Tanks</small>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#bricks">Bricks Division</a></li>
+      <li><div class="nav-divider"></div></li>
+      <li><a href="#tanks">Tanks Division</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <!-- HERO IMAGE: save as images/hero.jpg — site exterior or yard with bricks/tanks -->
+    <img src="images/hero.jpg" alt="Makoro Bricks yard" onerror="this.style.display='none'">
+    <div class="hero-bg-placeholder"></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-brick-strip brick-texture"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Polokwane · Ivypark · Est. Limpopo</div>
+    <h1 class="hero-title">Built on<br><span>Strength.</span><br>Trusted by<br>Limpopo.</h1>
+    <p class="hero-sub">Your one-stop supplier for quality clay bricks and durable water storage tanks. Serving contractors, builders and homeowners across Polokwane and Limpopo.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">Request a Quote</a>
+      <a href="tel:0637156522" class="btn-outline">📞 063 715 6522</a>
+    </div>
+    <div class="hero-divisions">
+      <a href="#bricks" class="division-pill">
+        <div class="division-pill-icon">🧱</div>
+        <div class="division-pill-text">
+          <strong>Makoro Bricks</strong>
+          <span>Clay & Concrete Bricks</span>
+        </div>
+      </a>
+      <a href="#tanks" class="division-pill">
+        <div class="division-pill-icon">💧</div>
+        <div class="division-pill-text">
+          <strong>Makoro Tanks</strong>
+          <span>Water Storage Solutions</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span>⭐</span> 4.9 Stars on Google</div>
+    <div class="trust-item"><span>📍</span> Based in Polokwane</div>
+    <div class="trust-item"><span>🏗️</span> Contractors Welcome</div>
+    <div class="trust-item"><span>💬</span> WhatsApp Quotes</div>
+    <div class="trust-item"><span>🇿🇦</span> Proudly South African</div>
+  </div>
+</div>
+
+<!-- BRICKS DIVISION -->
+<section id="bricks">
+  <div class="section-inner">
+    <div class="bricks-grid">
+      <div class="bricks-image-block">
+        <!-- BRICKS HERO IMAGE: save as images/bricks-hero.jpg — stacked bricks yard or wall -->
+        <img src="images/bricks-hero.jpg" alt="Makoro Bricks" class="bricks-main-img"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="bricks-img-placeholder brick-texture" style="display:none">
+          <span style="font-size:2rem">🧱</span>
+          <span>images/bricks-hero.jpg</span>
+          <span>Add photo of brick yard</span>
+        </div>
+        <div class="img-note">images/bricks-hero.jpg</div>
+        <div class="bricks-badge">
+          <strong>4.9 ★</strong>
+          <span>Google Rated</span>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">— Division One</div>
+        <h2 class="section-title">Makoro Bricks</h2>
+        <p class="section-lead">Quality clay and concrete bricks for every construction need. Whether you're building a home, boundary wall or commercial property — we have the right brick at the right price.</p>
+        <div class="brick-types">
+          <div class="brick-type-card">
+            <!-- PRODUCT IMAGE: save as images/brick-standard.jpg -->
+            <img src="images/brick-standard.jpg" alt="Standard Brick" class="brick-type-img"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="brick-type-placeholder brick-texture" style="display:none">
+              <span>images/brick-standard.jpg</span>
+            </div>
+            <div class="brick-type-body">
+              <div class="brick-type-name">Standard Brick</div>
+              <div class="brick-type-desc">222×106×73mm. General purpose residential and commercial use.</div>
+            </div>
+          </div>
+          <div class="brick-type-card">
+            <!-- PRODUCT IMAGE: save as images/brick-maxi.jpg -->
+            <img src="images/brick-maxi.jpg" alt="Maxi Brick" class="brick-type-img"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="brick-type-placeholder brick-texture" style="display:none">
+              <span>images/brick-maxi.jpg</span>
+            </div>
+            <div class="brick-type-body">
+              <div class="brick-type-name">Maxi Brick</div>
+              <div class="brick-type-desc">290×140×90mm. Fewer joints, faster builds, great for large projects.</div>
+            </div>
+          </div>
+          <div class="brick-type-card">
+            <!-- PRODUCT IMAGE: save as images/block-hollow.jpg -->
+            <img src="images/block-hollow.jpg" alt="Hollow Block" class="brick-type-img"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="brick-type-placeholder concrete-texture" style="display:none">
+              <span>images/block-hollow.jpg</span>
+            </div>
+            <div class="brick-type-body">
+              <div class="brick-type-name">Hollow Block</div>
+              <div class="brick-type-desc">140mm and 190mm. Walls, partitions and retaining structures.</div>
+            </div>
+          </div>
+          <div class="brick-type-card">
+            <!-- PRODUCT IMAGE: save as images/block-solid.jpg -->
+            <img src="images/block-solid.jpg" alt="Solid Block" class="brick-type-img"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="brick-type-placeholder concrete-texture" style="display:none">
+              <span>images/block-solid.jpg</span>
+            </div>
+            <div class="brick-type-body">
+              <div class="brick-type-name">Solid Block</div>
+              <div class="brick-type-desc">Heavy duty load-bearing. Boundary walls and foundations.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRICK DIVIDER -->
+<div class="brick-divider brick-texture-offset"></div>
+
+<!-- TANKS DIVISION -->
+<section id="tanks">
+  <div class="section-inner">
+    <div class="tanks-header-row">
+      <div class="section-header" style="margin-bottom:0">
+        <div class="eyebrow">— Division Two</div>
+        <h2 class="section-title">Makoro Tanks</h2>
+        <p class="section-lead">Reliable water storage for homes, farms and businesses. Multiple sizes available — we help you choose the right tank for your needs.</p>
+      </div>
+      <a href="#contact" class="btn-primary">Get Tank Quote</a>
+    </div>
+    <div class="tanks-grid">
+
+      <div class="tank-card">
+        <div class="tank-img-wrap">
+          <!-- PRODUCT IMAGE: save as images/tank-250.png — transparent bg preferred -->
+          <img src="images/tank-250.png" alt="250L Tank" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="tank-img-placeholder" style="display:none">
+            <span style="font-size:2rem">💧</span>
+            <span>images/tank-250.png</span>
+          </div>
+          <div class="tank-capacity-badge">250L</div>
+        </div>
+        <div class="tank-body">
+          <div class="tank-name">Household Slim Tank</div>
+          <p class="tank-desc">Compact design for small households and gardens. Fits tight spaces.</p>
+          <div class="tank-uses">
+            <span class="tank-tag">Household</span>
+            <span class="tank-tag">Garden</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tank-card">
+        <div class="tank-img-wrap">
+          <!-- PRODUCT IMAGE: save as images/tank-500.png -->
+          <img src="images/tank-500.png" alt="500L Tank" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="tank-img-placeholder" style="display:none">
+            <span style="font-size:2rem">💧</span>
+            <span>images/tank-500.png</span>
+          </div>
+          <div class="tank-capacity-badge">500L</div>
+        </div>
+        <div class="tank-body">
+          <div class="tank-name">Vertical Storage Tank</div>
+          <p class="tank-desc">Popular family size. Ideal for drinking water backup and irrigation.</p>
+          <div class="tank-uses">
+            <span class="tank-tag">Family Home</span>
+            <span class="tank-tag">Backup Water</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tank-card">
+        <div class="tank-img-wrap">
+          <!-- PRODUCT IMAGE: save as images/tank-2500.png -->
+          <img src="images/tank-2500.png" alt="2500L Tank" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="tank-img-placeholder" style="display:none">
+            <span style="font-size:2rem">💧</span>
+            <span>images/tank-2500.png</span>
+          </div>
+          <div class="tank-capacity-badge">2500L</div>
+        </div>
+        <div class="tank-body">
+          <div class="tank-name">Large Vertical Tank</div>
+          <p class="tank-desc">For larger homes, smallholdings and light commercial use.</p>
+          <div class="tank-uses">
+            <span class="tank-tag">Smallholding</span>
+            <span class="tank-tag">Commercial</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tank-card">
+        <div class="tank-img-wrap">
+          <!-- PRODUCT IMAGE: save as images/tank-5000.png -->
+          <img src="images/tank-5000.png" alt="5000L Tank" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="tank-img-placeholder" style="display:none">
+            <span style="font-size:2rem">💧</span>
+            <span>images/tank-5000.png</span>
+          </div>
+          <div class="tank-capacity-badge">5000L</div>
+        </div>
+        <div class="tank-body">
+          <div class="tank-name">Industrial Tank</div>
+          <p class="tank-desc">Heavy duty storage for farms, construction sites and businesses.</p>
+          <div class="tank-uses">
+            <span class="tank-tag">Farm</span>
+            <span class="tank-tag">Industrial</span>
+            <span class="tank-tag">Construction</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="padding:0">
+  <div class="about-split">
+    <div class="about-img-side">
+      <!-- ABOUT IMAGE: save as images/about.jpg — store front, staff, or yard -->
+      <img src="images/about.jpg" alt="Makoro Bricks store" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="about-img-placeholder brick-texture" style="display:none">
+        <span style="font-size:2.5rem">🏗️</span>
+        <span>images/about.jpg</span>
+        <span>Storefront or staff photo</span>
+      </div>
+    </div>
+    <div class="about-content-side">
+      <div class="eyebrow">Who We Are</div>
+      <h2 class="section-title light">Polokwane's Local<br>Building Partner</h2>
+      <p>Makoro Bricks & Tanks has been serving builders, contractors and homeowners right here in Polokwane. Located on the corner of Campbell & Kerk Street in Ivypark, we pride ourselves on quality products, honest pricing and service that keeps our customers coming back.</p>
+      <p style="margin-top:0.75rem">From a single bag of sand to a full construction supply order — we treat every customer with the same respect and attention.</p>
+      <div class="about-stats">
+        <div class="about-stat">
+          <div class="about-stat-num">4.9★</div>
+          <div class="about-stat-label">Google Rating</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num">25+</div>
+          <div class="about-stat-label">Happy Customers</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num">2</div>
+          <div class="about-stat-label">Divisions</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-num">100%</div>
+          <div class="about-stat-label">Local Business</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-inner">
+    <div class="reviews-top">
+      <div>
+        <div class="eyebrow" style="color:var(--brick-light)">What Customers Say</div>
+        <h2 class="section-title light">Real Reviews</h2>
+      </div>
+      <div class="google-rating">
+        <div class="g-score">4.9</div>
+        <div class="g-info">
+          <div class="stars">★★★★★</div>
+          <p>25 reviews on Google</p>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Bought my bricks without hassle and the staff member who helped me was excellent. Will definitely be back for my next project."</p>
+        <div class="reviewer-name">— Google Reviewer, Polokwane</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Great service and best prices in Polokwane. As a contractor I always come to Makoro first — they never disappoint."</p>
+        <div class="reviewer-name">— Google Reviewer, Limpopo</div>
+      </div>
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Nice quality bricks and very helpful staff. Easy to load, fair pricing. Highly recommended for any builder in the area."</p>
+        <div class="reviewer-name">— Google Reviewer, Polokwane</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="eyebrow">Get In Touch</div>
+      <h2 class="section-title">Visit or Contact Us</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-card">
+          <div class="c-icon">📍</div>
+          <div>
+            <div class="c-label">Address</div>
+            <div class="c-value">Cnr Campbell & Kerk Street<br>Ivypark, Polokwane, 0700</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="c-icon">📞</div>
+          <div>
+            <div class="c-label">Phone & WhatsApp</div>
+            <div class="c-value"><a href="tel:0637156522" style="color:inherit;text-decoration:none">063 715 6522</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="c-icon">🕐</div>
+          <div>
+            <div class="c-label">Trading Hours</div>
+            <div class="c-value">Mon – Thu: 8:00am – 5:00pm<br>Friday: 8:00am – 4:00pm<br>Saturday & Sunday: Closed</div>
+          </div>
+        </div>
+        <!-- GOOGLE MAPS EMBED: pointed at Cnr Campbell & Kerk Street, Ivypark, Polokwane -->
+        <iframe
+          src="https://www.google.com/maps?q=Cnr+Campbell+%26+Kerk+Street,+Ivypark,+Polokwane,+0700&output=embed"
+          width="100%" height="200" style="border:0;border-radius:8px;margin-top:0.5rem"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="Makoro Bricks & Tanks location map">
+        </iframe>
+      </div>
+      <div class="quote-form">
+        <div class="form-title">Request a Quote</div>
+        <div class="form-subtitle">Send us your requirements on WhatsApp and we'll respond within 24 hours — usually much faster.</div>
+
+        <!--
+          FORM TEMPORARILY DISABLED — re-enable once company email is set up.
+          To turn back on: replace YOUR_FORM_ID with the real Formspree endpoint ID,
+          then delete this comment wrapper (the <!-- and --> lines) so the <form> below is live again,
+          and remove the .whatsapp-cta block underneath.
+
+        <form id="quoteForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" name="name" placeholder="Your name" required>
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" name="phone" placeholder="e.g. 072 123 4567" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Division</label>
+            <select name="division" required>
+              <option value="">Select a division</option>
+              <option>Makoro Bricks — Clay or Concrete Bricks</option>
+              <option>Makoro Tanks — Water Storage</option>
+              <option>Both Divisions</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Product & Quantity Needed</label>
+            <textarea name="message" placeholder="e.g. 5000 standard bricks for a 3-bedroom house..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">Send Quote Request</button>
+          <div id="formStatus" class="form-status"></div>
+        </form>
+        -->
+
+        <div class="whatsapp-cta">
+          <div class="whatsapp-cta-icon">💬</div>
+          <p class="whatsapp-cta-text">Tell us what you need — bricks, blocks or tanks, and how many — and we'll send you a quote right on WhatsApp.</p>
+        </div>
+        <a href="https://wa.me/27637156522?text=Hi%2C%20I'd%20like%20a%20quote%20from%20Makoro" class="wa-btn">
+          💬 WhatsApp Us for a Quote
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <!-- LOGO: save as images/logo.png -->
+        <img src="images/logo.png" alt="Makoro Logo" onerror="this.style.display='none'">
+        <div class="footer-brand-placeholder">MAKORO BRICKS & TANKS</div>
+        <p>Polokwane's trusted supplier of quality bricks and water storage tanks. Proudly serving Limpopo from our Ivypark location.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Divisions</h4>
+        <ul>
+          <li><a href="#bricks">Makoro Bricks</a></li>
+          <li><a href="#tanks">Makoro Tanks</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#reviews">Reviews</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:0637156522">063 715 6522</a></li>
+          <li><a href="https://wa.me/27637156522">WhatsApp Us</a></li>
+          <li><a href="#contact">Get a Quote</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© <span id="year"></span> Makoro Bricks & Tanks. All rights reserved. Ivypark, Polokwane.</p>
+      <div class="footer-credit">Website by <a href="https://kldigital.co.za" target="_blank">KL Digital</a> — Polokwane</div>
+    </div>
+  </div>
+</footer>
+
+<a href="https://wa.me/27637156522" class="wa-float" title="WhatsApp Makoro">💬</a>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Footer copyright year — always current, no manual updates needed
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// Quote form — submits to Formspree via fetch so the page never redirects away.
+// WhatsApp button next to it keeps working independently either way.
+// NOTE: form is currently commented out above (waiting on company email setup),
+// so this block safely does nothing until it's re-enabled — no code changes needed then.
+const quoteForm = document.getElementById('quoteForm');
+const formStatus = document.getElementById('formStatus');
+
+if (quoteForm) {
+  quoteForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    formStatus.className = 'form-status sending';
+    formStatus.textContent = 'Sending your request...';
+
+    try {
+      const response = await fetch(quoteForm.action, {
+        method: 'POST',
+        body: new FormData(quoteForm),
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        formStatus.className = 'form-status success';
+        formStatus.textContent = "Thanks! Your quote request has been sent — we'll be in touch shortly.";
+        quoteForm.reset();
+      } else {
+        formStatus.className = 'form-status error';
+        formStatus.textContent = "Something went wrong sending that. Please try WhatsApp below instead.";
+      }
+    } catch (err) {
+      formStatus.className = 'form-status error';
+      formStatus.textContent = "Couldn't send right now. Please try WhatsApp below instead.";
+    }
+  });
+}
+</script>
+</body>
+</html>
